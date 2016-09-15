@@ -67,26 +67,24 @@ nrow(ped <- prunePed(ped, keep=col$animal))
 
 ### select only individuals with firststripe data
 
-nrow(dat.ped <- subset(col, !is.na(firststripe_.mm.)))
+nrow(dat.ped <- subset(col, !is.na(firststripe_.mm.) & !is.na(elytrasize)))
 ## 417
 dat.ped$Collection <- factor(dat.ped$Collection)
-
-nrow(ped.dat <- prunePed(ped, keep=dat.ped$animal))
+ nrow(ped.dat <- prunePed(ped, keep=dat.ped$animal))
 ## 518
-
-prior<-list(R=list(V=1,nu=0.002), G=list(G1=list(V=1,nu=0.002)))
-m0<-MCMCglmm(firststripe_.mm. ~ 1,
+ prior<-list(R=list(V=1,nu=0.002), G=list(G1=list(V=1,nu=0.002)))
+m<-MCMCglmm(firststripe_.mm. ~ elytrasize,
 			random=~animal,
 			family="gaussian",
 			prior=prior,
 			pedigree=ped.dat,
 			data=dat.ped,
-			nitt=250000,
+			nitt=500000,
 			burnin=1000,
-			thin=200)
+			thin=1000)
 ### runs fine
 
-autocorr(m0$Sol)  ## fine
+autocorr(m$Sol)  ## fine
 ##    , , (Intercept)
 ##    
 ##    (Intercept)
@@ -96,10 +94,10 @@ autocorr(m0$Sol)  ## fine
 ##    Lag 2000   8.177264e-03
 ##    Lag 10000 -3.671339e-03
 
-plot(m0$Sol)
-plot(m0$VCV)
+plot(m$Sol)
+plot(m$VCV)
 
-herit <- m0$VCV[, "animal"]/(m0$VCV[, "animal"] + m0$VCV[, "units"])
+herit <- m$VCV[, "animal"]/(m$VCV[, "animal"] + m$VCV[, "units"])
 
 effectiveSize(herit)  ## 1686
 autocorr(herit) ## fine
@@ -168,8 +166,13 @@ names(dat.ped)
 ##   [37] "animal"  
 
 
+nrow(dat.ped <- subset(col, !is.na(secondstripe_.mm.) & !is.na(elytrasize)))
+## 417
+dat.ped$Collection <- factor(dat.ped$Collection)
+ nrow(ped.dat <- prunePed(ped, keep=dat.ped$animal))
+## 518
 prior<-list(R=list(V=1,nu=0.002), G=list(G1=list(V=1,nu=0.002)))
-m0<-MCMCglmm(secondstripe_.mm. ~ 1,
+m0<-MCMCglmm(secondstripe_.mm. ~ elytrasize,
 			random=~animal,
 			family="gaussian",
 			prior=prior,
@@ -196,8 +199,13 @@ HPDinterval(herit)
 ##    [1] 0.9498998
 
 
+nrow(dat.ped <- subset(col, !is.na(orange_total) & !is.na(elytrasize)))
+## 417
+dat.ped$Collection <- factor(dat.ped$Collection)
+ nrow(ped.dat <- prunePed(ped, keep=dat.ped$animal))
+## 518
 prior<-list(R=list(V=1,nu=0.002), G=list(G1=list(V=1,nu=0.002)))
-m1<-MCMCglmm(orange_total ~ 1,
+m1<-MCMCglmm(orange_total ~ elytrasize,
 			random=~animal,
 			family="gaussian",
 			prior=prior,
@@ -223,6 +231,11 @@ HPDinterval(herit)
 ##    attr(,"Probability")
 ##    [1] 0.9498998
 
+nrow(dat.ped <- subset(col, !is.na(elytrasize)))
+## 416
+dat.ped$Collection <- factor(dat.ped$Collection)
+ nrow(ped.dat <- prunePed(ped, keep=dat.ped$animal))
+## 517
 prior<-list(R=list(V=1,nu=0.002), G=list(G1=list(V=1,nu=0.002)))
 m2<-MCMCglmm(elytrasize ~ 1,
 			random=~animal,
@@ -252,6 +265,11 @@ HPDinterval(herit)
 ###     > 
 
 
+nrow(dat.ped <- subset(col, !is.na(Lum_2stripe)))
+## 378
+dat.ped$Collection <- factor(dat.ped$Collection)
+ nrow(ped.dat <- prunePed(ped, keep=dat.ped$animal))
+## 463
 prior<-list(R=list(V=1,nu=0.002), G=list(G1=list(V=1,nu=0.002)))
 m3<-MCMCglmm(Lum_2stripe ~ 1,
              random=~animal,
@@ -279,6 +297,11 @@ HPDinterval(herit)
 ##      [1] 0.9498998
 
 
+nrow(dat.ped <- subset(col, !is.na(UV_2stripe)))
+## 378
+dat.ped$Collection <- factor(dat.ped$Collection)
+ nrow(ped.dat <- prunePed(ped, keep=dat.ped$animal))
+## 463
 prior<-list(R=list(V=1,nu=0.002), G=list(G1=list(V=1,nu=0.002)))
 m4<-MCMCglmm(UV_2stripe ~ 1,
              random=~animal,
@@ -308,6 +331,11 @@ HPDinterval(herit)
 
 
 
+nrow(dat.ped <- subset(col, !is.na(SW_2stripe)))
+## 378
+dat.ped$Collection <- factor(dat.ped$Collection)
+ nrow(ped.dat <- prunePed(ped, keep=dat.ped$animal))
+## 463
 prior<-list(R=list(V=1,nu=0.002), G=list(G1=list(V=1,nu=0.002)))
 m5<-MCMCglmm(SW_2stripe ~ 1,
              random=~animal,
@@ -336,6 +364,11 @@ HPDinterval(herit)
 ###   [1] 0.9498998
 
 
+nrow(dat.ped <- subset(col, !is.na(MW_2stripe)))
+## 378
+dat.ped$Collection <- factor(dat.ped$Collection)
+ nrow(ped.dat <- prunePed(ped, keep=dat.ped$animal))
+## 463
 prior<-list(R=list(V=1,nu=0.002), G=list(G1=list(V=1,nu=0.002)))
 m6<-MCMCglmm(MW_2stripe ~ 1,
              random=~animal,
@@ -364,6 +397,11 @@ HPDinterval(herit)
 ###     [1] 0.9498998
 
 
+nrow(dat.ped <- subset(col, !is.na(LW_2stripe)))
+## 378
+dat.ped$Collection <- factor(dat.ped$Collection)
+ nrow(ped.dat <- prunePed(ped, keep=dat.ped$animal))
+## 463
 prior<-list(R=list(V=1,nu=0.002), G=list(G1=list(V=1,nu=0.002)))
 m7<-MCMCglmm(LW_2stripe ~ 1,
              random=~animal,
@@ -392,6 +430,11 @@ HPDinterval(herit)
 ##      [1] 0.9498998
 
 
+nrow(dat.ped <- subset(col, !is.na(DBL_2stripe)))
+## 378
+dat.ped$Collection <- factor(dat.ped$Collection)
+ nrow(ped.dat <- prunePed(ped, keep=dat.ped$animal))
+## 463
 prior<-list(R=list(V=1,nu=0.002), G=list(G1=list(V=1,nu=0.002)))
 m8<-MCMCglmm(DBL_2stripe ~ 1,
              random=~animal,
@@ -420,6 +463,11 @@ HPDinterval(herit)
 #     [1] 0.9498998
 
 
+nrow(dat.ped <- subset(col, !is.na(Meanref_2stripe)))
+## 378
+dat.ped$Collection <- factor(dat.ped$Collection)
+ nrow(ped.dat <- prunePed(ped, keep=dat.ped$animal))
+## 463
 prior<-list(R=list(V=1,nu=0.002), G=list(G1=list(V=1,nu=0.002)))
 m9<-MCMCglmm(Meanref_2stripe ~ 1,
              random=~animal,
@@ -447,6 +495,11 @@ HPDinterval(herit)
 ###   [1] 0.9498998
 
 
+nrow(dat.ped <- subset(col, !is.na(bodysize_mg)))
+## 829
+dat.ped$Collection <- factor(dat.ped$Collection)
+ nrow(ped.dat <- prunePed(ped, keep=dat.ped$animal))
+## 1021
 prior<-list(R=list(V=1,nu=0.002), G=list(G1=list(V=1,nu=0.002)))
 m10<-MCMCglmm(bodysize_mg ~ 1,
              random=~animal,
@@ -475,8 +528,13 @@ HPDinterval(herit)
 ##  [1] 0.9498998
 
 
+nrow(dat.ped <- subset(col, !is.na(eclosionfluid) & !is.na(sex)))
+## 830
+dat.ped$Collection <- factor(dat.ped$Collection)
+ nrow(ped.dat <- prunePed(ped, keep=dat.ped$animal))
+## 1020
 prior<-list(R=list(V=1,nu=0.002), G=list(G1=list(V=1,nu=0.002)))
-m11<-MCMCglmm(eclosionfluid ~ 1,
+m11<-MCMCglmm(eclosionfluid ~ sex,
               random=~animal,
               family="gaussian",
               prior=prior,
@@ -504,6 +562,11 @@ HPDinterval(herit)
 
 
 
+nrow(dat.ped <- subset(col, !is.na(orange_prop)))
+## 416
+dat.ped$Collection <- factor(dat.ped$Collection)
+ nrow(ped.dat <- prunePed(ped, keep=dat.ped$animal))
+## 517
 prior<-list(R=list(V=1,nu=0.002), G=list(G1=list(V=1,nu=0.002)))
 m12<-MCMCglmm(orange_prop ~ 1,
               random=~animal,
@@ -533,6 +596,11 @@ HPDinterval(herit)
 
 
 
+nrow(dat.ped <- subset(col, !is.na(firststripe_prop)))
+## 416
+dat.ped$Collection <- factor(dat.ped$Collection)
+ nrow(ped.dat <- prunePed(ped, keep=dat.ped$animal))
+## 517
 prior<-list(R=list(V=1,nu=0.002), G=list(G1=list(V=1,nu=0.002)))
 m13<-MCMCglmm(firststripe_prop ~ 1,
               random=~animal,
@@ -561,6 +629,11 @@ HPDinterval(herit)
 ##    [1] 0.9498998
 
 
+nrow(dat.ped <- subset(col, !is.na(secondstripe_prop)))
+## 416
+dat.ped$Collection <- factor(dat.ped$Collection)
+ nrow(ped.dat <- prunePed(ped, keep=dat.ped$animal))
+## 517
 prior<-list(R=list(V=1,nu=0.002), G=list(G1=list(V=1,nu=0.002)))
 m14<-MCMCglmm(secondstripe_prop ~ 1,
               random=~animal,
@@ -587,4 +660,238 @@ HPDinterval(herit)
 ##    var1 0.6978735 0.8975755
 ##    attr(,"Probability")
 ##    [1] 0.9498998
+    
+nrow(dat.ped <- subset(col, !is.na(Lum_1stripe) & !is.na(elytrasize)))
+## 378
+dat.ped$Collection <- factor(dat.ped$Collection)
+ nrow(ped.dat <- prunePed(ped, keep=dat.ped$animal))
+## 463
+prior<-list(R=list(V=1,nu=0.002), G=list(G1=list(V=1,nu=0.002)))
+m15<-MCMCglmm(Lum_1stripe ~ elytrasize,
+             random=~animal,
+             family="gaussian",
+             prior=prior,
+             pedigree=ped.dat,
+             data=dat.ped,
+             nitt=500000,
+             burnin=1000,
+             thin=1000)
 
+autocorr(m15$Sol)  ## fine
+herit <- m15$VCV[, "animal"]/(m15$VCV[, "animal"] + m15$VCV[, "units"])
+effectiveSize(herit)  ## 1686
+autocorr(herit) ## fine
+posterior.mode(herit)
+HPDinterval(herit)
+  
+
+nrow(dat.ped <- subset(col, !is.na(UV_1stripe) & !is.na(elytrasize)))
+## 378
+dat.ped$Collection <- factor(dat.ped$Collection)
+ nrow(ped.dat <- prunePed(ped, keep=dat.ped$animal))
+## 463
+prior<-list(R=list(V=1,nu=0.002), G=list(G1=list(V=1,nu=0.002)))
+m16<-MCMCglmm(UV_1stripe ~ elytrasize,
+             random=~animal,
+             family="gaussian",
+             prior=prior,
+             pedigree=ped.dat,
+             data=dat.ped,
+             nitt=500000,
+             burnin=1000,
+             thin=1000)
+
+autocorr(m16$Sol)  ## fine
+herit <- m16$VCV[, "animal"]/(m16$VCV[, "animal"] + m16$VCV[, "units"])
+effectiveSize(herit)  ## 499
+autocorr(herit) ## fine
+posterior.mode(herit)
+HPDinterval(herit)
+
+  
+nrow(dat.ped <- subset(col, !is.na(SW_1stripe) & !is.na(elytrasize)))
+## 378
+dat.ped$Collection <- factor(dat.ped$Collection)
+ nrow(ped.dat <- prunePed(ped, keep=dat.ped$animal))
+## 463
+prior<-list(R=list(V=1,nu=0.002), G=list(G1=list(V=1,nu=0.002)))
+m17<-MCMCglmm(SW_1stripe ~ elytrasize,
+             random=~animal,
+             family="gaussian",
+             prior=prior,
+             pedigree=ped.dat,
+             data=dat.ped,
+             nitt=500000,
+             burnin=1000,
+             thin=1000)
+
+autocorr(m17$Sol)  ## fine
+herit <- m17$VCV[, "animal"]/(m17$VCV[, "animal"] + m17$VCV[, "units"])
+effectiveSize(herit)  ## 499
+autocorr(herit) ## fine
+posterior.mode(herit)
+HPDinterval(herit)
+  
+
+nrow(dat.ped <- subset(col, !is.na(MW_1stripe) & !is.na(elytrasize)))
+## 378
+dat.ped$Collection <- factor(dat.ped$Collection)
+ nrow(ped.dat <- prunePed(ped, keep=dat.ped$animal))
+## 463
+prior<-list(R=list(V=1,nu=0.002), G=list(G1=list(V=1,nu=0.002)))
+m18<-MCMCglmm(MW_1stripe ~ elytrasize,
+             random=~animal,
+             family="gaussian",
+             prior=prior,
+             pedigree=ped.dat,
+             data=dat.ped,
+             nitt=500000,
+             burnin=1000,
+             thin=1000)
+
+autocorr(m18$Sol)  ## fine
+herit <- m18$VCV[, "animal"]/(m18$VCV[, "animal"] + m18$VCV[, "units"])
+effectiveSize(herit)  ## 388.8679 
+autocorr(herit) ## fine
+posterior.mode(herit)
+HPDinterval(herit)
+  
+
+
+nrow(dat.ped <- subset(col, !is.na(LW_1stripe) & !is.na(elytrasize)))
+## 378
+dat.ped$Collection <- factor(dat.ped$Collection)
+ nrow(ped.dat <- prunePed(ped, keep=dat.ped$animal))
+## 463
+prior<-list(R=list(V=1,nu=0.002), G=list(G1=list(V=1,nu=0.002)))
+m19<-MCMCglmm(LW_1stripe ~ elytrasize,
+             random=~animal,
+             family="gaussian",
+             prior=prior,
+             pedigree=ped.dat,
+             data=dat.ped,
+             nitt=500000,
+             burnin=1000,
+             thin=1000)
+
+autocorr(m19$Sol)  ## fine
+herit <- m19$VCV[, "animal"]/(m19$VCV[, "animal"] + m19$VCV[, "units"])
+effectiveSize(herit)  ## 499
+autocorr(herit) ## fine
+posterior.mode(herit)
+HPDinterval(herit)
+  
+
+
+nrow(dat.ped <- subset(col, !is.na(DBL_1stripe) & !is.na(elytrasize)))
+## 378
+dat.ped$Collection <- factor(dat.ped$Collection)
+ nrow(ped.dat <- prunePed(ped, keep=dat.ped$animal))
+## 463
+prior<-list(R=list(V=1,nu=0.002), G=list(G1=list(V=1,nu=0.002)))
+m20<-MCMCglmm(DBL_1stripe ~ elytrasize,
+             random=~animal,
+             family="gaussian",
+             prior=prior,
+             pedigree=ped.dat,
+             data=dat.ped,
+             nitt=500000,
+             burnin=1000,
+             thin=1000)
+
+autocorr(m20$Sol)  ## fine
+herit <- m20$VCV[, "animal"]/(m20$VCV[, "animal"] + m20$VCV[, "units"])
+effectiveSize(herit)  ## 499
+autocorr(herit) ## fine
+posterior.mode(herit)
+HPDinterval(herit)
+
+
+nrow(dat.ped <- subset(col, !is.na(Meanref_1stripe) & !is.na(elytrasize)))
+## 378
+dat.ped$Collection <- factor(dat.ped$Collection)
+ nrow(ped.dat <- prunePed(ped, keep=dat.ped$animal))
+## 463
+prior<-list(R=list(V=1,nu=0.002), G=list(G1=list(V=1,nu=0.002)))
+m21<-MCMCglmm(Meanref_1stripe ~ elytrasize,
+             random=~animal,
+             family="gaussian",
+             prior=prior,
+             pedigree=ped.dat,
+             data=dat.ped,
+             nitt=500000,
+             burnin=1000,
+             thin=1000)
+
+autocorr(m21$Sol)  ## fine
+herit <- m21$VCV[, "animal"]/(m21$VCV[, "animal"] + m21$VCV[, "units"])
+effectiveSize(herit)  ## 499
+autocorr(herit) ## fine
+posterior.mode(herit)
+HPDinterval(herit)
+
+
+
+nrow(dat.ped <- subset(col, !is.na(Lum_black) & !is.na(elytrasize)))
+## 378
+dat.ped$Collection <- factor(dat.ped$Collection)
+ nrow(ped.dat <- prunePed(ped, keep=dat.ped$animal))
+## 463
+prior<-list(R=list(V=1,nu=0.002), G=list(G1=list(V=1,nu=0.002)))
+m22<-MCMCglmm(Lum_black ~ sex,
+             random=~animal,
+             family="gaussian",
+             prior=prior,
+             pedigree=ped.dat,
+             data=dat.ped,
+             nitt=500000,
+             burnin=1000,
+             thin=1000)
+
+autocorr(m22$Sol)  ## fine
+herit <- m22$VCV[, "animal"]/(m22$VCV[, "animal"] + m22$VCV[, "units"])
+effectiveSize(herit)  ## 499
+autocorr(herit) ## fine
+posterior.mode(herit)
+HPDinterval(herit)
+
+nrow(dat.ped <- subset(col, !is.na(Meanref_black) & !is.na(elytrasize)))
+## 378
+dat.ped$Collection <- factor(dat.ped$Collection)
+ nrow(ped.dat <- prunePed(ped, keep=dat.ped$animal))
+## 463
+prior<-list(R=list(V=1,nu=0.002), G=list(G1=list(V=1,nu=0.002)))
+m23<-MCMCglmm(Meanref_black ~ sex,
+             random=~animal,
+             family="gaussian",
+             prior=prior,
+             pedigree=ped.dat,
+             data=dat.ped,
+             nitt=500000,
+             burnin=1000,
+             thin=1000)
+
+autocorr(m23$Sol)  ## fine
+herit <- m23$VCV[, "animal"]/(m23$VCV[, "animal"] + m23$VCV[, "units"])
+effectiveSize(herit)  ## 499
+autocorr(herit) ## fine
+posterior.mode(herit)
+HPDinterval(herit)
+
+
+## Investigate heritability with respect to inclusion of fixed effects!
+
+mm <- c('m', paste('m',0:23, sep=''))
+
+length(herit <- lapply(mm, function(x) get(x)$VCV[, "animal"]/(get(x)$VCV[, "animal"] + get(x)$VCV[, "units"])))
+
+h2 <- sapply(herit, posterior.mode)
+h2ci <- sapply(herit, HPDinterval)
+
+hh <- t(rbind.data.frame(h2, h2ci))
+hn <- sapply(mm, function(x) as.character(get(x)$Fixed$formula[2]))
+row.names(hh) <- hn
+colnames(hh)<-c('herit','herit.low','herit.hi')
+
+hh <- round(hh, 3)
+             
