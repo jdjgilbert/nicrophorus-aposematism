@@ -1,22 +1,63 @@
 
+## Run 1: each family has a unique sire
+## Saved as: heritability_1_sire_per_family_20160915.RData
+##    herit herit.low herit.hi
+##    firststripe_.mm.  0.909     0.758    0.958
+##    secondstripe_.mm. 0.987     0.851    0.997
+##    orange_total      0.969     0.860    0.988
+##    elytrasize        0.992     0.848    0.999
+##    Lum_2stripe       0.581     0.265    0.772
+##    UV_2stripe        0.271     0.000    0.477
+##    SW_2stripe        0.412     0.215    0.665
+##    MW_2stripe        0.583     0.399    0.994
+##    LW_2stripe        0.486     0.236    0.670
+##    DBL_2stripe       0.481     0.249    0.807
+##    Meanref_2stripe   0.438     0.244    0.727
+##    bodysize_mg       0.994     0.926    0.999
+##    eclosionfluid     0.474     0.286    0.728
+##    orange_prop       0.936     0.820    0.965
+##    firststripe_prop  0.852     0.722    0.915
+##    secondstripe_prop 0.831     0.698    0.898
+##    Lum_1stripe       0.285     0.133    0.491
+##    UV_1stripe        0.000     0.000    0.265
+##    SW_1stripe        0.000     0.000    0.060
+##    MW_1stripe        0.338     0.200    0.631
+##    LW_1stripe        0.232     0.094    0.466
+##    DBL_1stripe       0.308     0.131    0.519
+##    Meanref_1stripe   0.000     0.000    0.358
+##    Lum_black         0.000     0.000    0.028
+##    Meanref_black     0.000     0.000    0.013
 
-TRAIT     		HERITABILITY  HERITABILITY LCI  HERITABILITY HCI
-stripe1   		0.9311069	0.8070718	0.9691263
-stripe2	  		0.9693553	0.8599488	0.9884443
-orange_total		0.9693553	0.8599488 	0.9884443
-elytrasize		0.9920369	0.8478869	0.9990856  
-Lum_2stripe		0.5812081	0.2647815	0.7716477
-UV_2stripe		0.4117868	0.2145945	0.6648513
-SW_2stripe		0.4117868	0.2145945	0.6648513
-MW_2stripe		0.5830845	0.3994038	0.9937514
-LW_2stripe		0.4864544	0.2355224	0.6697852
-DBL_2stripe		0.4810725	0.249275	0.8066984
-Meanref_2stripe		0.4379333	0.2436059	0.7265899
-bodysize_mg		0.9944337	0.9258554	0.998655
-eclosionfluid		0.4744981	0.2857645	0.7276357
-orange_prop		0.9361451	0.820006	0.9651244
-firststripe_prop	0.8523544	0.7222129	0.9146386
-secondstripe_prop	0.8314307	0.6978735	0.8975755
+
+## Run 2: each individual has a unique sire
+## Saved as: heritability_1_sire_per_individual_20160915.RData
+
+##                    herit     herit.low herit.hi
+##  firststripe_.mm.  0.923     0.835    0.957
+##  secondstripe_.mm. 0.966     0.912    0.991
+##  orange_total      0.970     0.902    0.987
+##  elytrasize        0.995     0.941    0.998
+##  Lum_2stripe       0.994     0.786    0.998
+##  UV_2stripe        0.986     0.320    0.996
+##  SW_2stripe        0.919     0.524    0.972
+##  MW_2stripe        0.993     0.841    0.997
+##  LW_2stripe        0.993     0.692    0.998
+##  DBL_2stripe       0.990     0.758    0.997
+##  Meanref_2stripe   0.986     0.694    0.995
+##  bodysize_mg       0.917     0.855    0.943
+##  eclosionfluid     0.794     0.572    0.856
+##  orange_prop       0.927     0.852    0.964
+##  firststripe_prop  0.859     0.779    0.920
+##  secondstripe_prop 0.848     0.762    0.915
+##  Lum_1stripe       0.597     0.337    0.971
+##  UV_1stripe        0.001     0.000    0.694
+##  SW_1stripe        0.000     0.000    0.172
+##  MW_1stripe        0.858     0.494    0.978
+##  LW_1stripe        0.537     0.295    0.960
+##  DBL_1stripe       0.662     0.342    0.952
+##  Meanref_1stripe   0.316     0.064    0.813
+##  Lum_black         0.000     0.000    0.026
+##  Meanref_black     0.000     0.000    0.041
 
 
 
@@ -58,7 +99,8 @@ head(ped <- cbind.data.frame(id=paste(col$Family, col$individual, sep='-'), dam=
 ##  6 105-4 105
 
 #ped$sire <- rep('sire1', nrow(ped))  ## all indivs have the same father
-ped$sire <- paste('M', ped$dam, sep='') ## all families have distinct fathers
+#ped$sire <- paste('M', ped$dam, sep='') ## all families have distinct fathers
+ped$sire <- paste('M', ped$id, sep='') ## all families have distinct fathers
 
 nrow(ped <- insertPed(ped))
 ## [1] 1007
@@ -888,10 +930,43 @@ length(herit <- lapply(mm, function(x) get(x)$VCV[, "animal"]/(get(x)$VCV[, "ani
 h2 <- sapply(herit, posterior.mode)
 h2ci <- sapply(herit, HPDinterval)
 
-hh <- t(rbind.data.frame(h2, h2ci))
+h2es <- sapply(herit, effectiveSize)
+
+hh <- round(t(rbind.data.frame(h2, h2ci, h2es)), 3)
 hn <- sapply(mm, function(x) as.character(get(x)$Fixed$formula[2]))
 row.names(hh) <- hn
-colnames(hh)<-c('herit','herit.low','herit.hi')
+colnames(hh)<-c('herit','herit.low','herit.hi','effSize')
 
 hh <- round(hh, 3)
              
+
+cbind(hh, sapply(herit, effectiveSize))
+
+### All lines with heritability 0 have small effectiveSize -- why?
+
+### Check UV_1stripe, SW_1stripe, Meanref_1stripe, Lum_black, Meanref_black
+
+### UV_1stripe
+nrow(dat.ped <- subset(col, !is.na(UV_1stripe) & !is.na(elytrasize)))
+## 378
+dat.ped$Collection <- factor(dat.ped$Collection)
+ nrow(ped.dat <- prunePed(ped, keep=dat.ped$animal))
+## 463
+prior<-list(R=list(V=1,nu=0.002), G=list(G1=list(V=1,nu=0.002)))
+m16<-MCMCglmm(UV_1stripe ~ elytrasize,
+             random=~animal,
+             family="gaussian",
+             prior=prior,
+             pedigree=ped.dat,
+             data=dat.ped,
+             nitt=1000000,
+             burnin=1000,
+             thin=5000)
+
+autocorr(m16$Sol)  ## fine
+herit16 <- m16$VCV[, "animal"]/(m16$VCV[, "animal"] + m16$VCV[, "units"])
+effectiveSize(herit16)  ## 28 with thin 5000
+autocorr(herit16) ## Not fine with thin 2000 - 0.43 at lag 2000
+posterior.mode(herit16)
+HPDinterval(herit16)
+
